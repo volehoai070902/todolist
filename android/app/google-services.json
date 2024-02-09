@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "511303522786",
+    "project_id": "todo-list-lehoai-mobiless",
+    "storage_bucket": "todo-list-lehoai-mobiless.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:511303522786:android:887338d1a3fd3919fe01bb",
+        "android_client_info": {
+          "package_name": "com.example.todo_list"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqLnROC5Wms2lUh4nkWk8rD9QjXKz7IQs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
