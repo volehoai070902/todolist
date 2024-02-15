@@ -2,14 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/state/user_info/model/user_infor.dart';
 import 'package:todo_list/state/user_info/providers/user_infor_password_provider.dart';
-
-
-
-
-
 final visionProvider = StateProvider<bool>((ref) => true);
 final buttonStateProvider = StateProvider((ref) => true);
-
 
 class SignUpView extends ConsumerWidget {
   UserModel userModel = UserModel(email: '', password: '');
@@ -20,6 +14,7 @@ class SignUpView extends ConsumerWidget {
     return Scaffold(
         appBar: AppBar(),
         body: Container(
+          width: double.infinity,
           padding: EdgeInsets.all(15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,6 +88,9 @@ class SignUpView extends ConsumerWidget {
                     isEnable = true;
                   }
                   return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50)
+                      ),
                       onPressed: isEnable ? () {} : null,
                       child: Text("Sign up"));
                 },
