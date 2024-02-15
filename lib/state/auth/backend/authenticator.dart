@@ -35,8 +35,7 @@ class Authenticator {
           email != null &&
           credential != null) {
         // ignore: deprecated_member_use
-        final provider =
-            await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+        final provider = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
         if (provider.contains(Constants.googleCom)) {
           await loginWithGoogle();
           FirebaseAuth.instance.currentUser?.linkWithCredential(credential);

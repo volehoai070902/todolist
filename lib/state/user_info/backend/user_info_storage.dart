@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:todo_list/log/logger_custom.dart';
 import 'package:todo_list/state/constants/firebase_collection_name.dart';
 import 'package:todo_list/state/constants/firebase_field_name.dart';
 import 'package:todo_list/state/posts/typedefs/user_id.dart';

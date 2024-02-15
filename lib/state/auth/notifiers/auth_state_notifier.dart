@@ -1,7 +1,5 @@
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:logger/logger.dart';
-import 'package:todo_list/log/logger_custom.dart';
 import 'package:todo_list/state/auth/backend/authenticator.dart';
 import 'package:todo_list/state/auth/model/auth_result.dart';
 import 'package:todo_list/state/auth/model/auth_state.dart';
@@ -61,6 +59,4 @@ class AuthStateNotifier extends StateNotifier<AuthState>{
 
     return _userInfoStorage.saveUserInfo(userId: userId, displayName: _authenticator.displayName, email: _authenticator.email);
   }
-
-
 }
