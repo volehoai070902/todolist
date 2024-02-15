@@ -35,7 +35,6 @@ class MyApp extends ConsumerWidget {
       home: Consumer(
         builder: (context, ref, child){
           ref.listen<bool>(isLoadingProvider, (_, isLoading) {
-            
             if(isLoading){
               LoggerCustom.instance().f(isLoading);
               LoadingScreen.instance().show(
