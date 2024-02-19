@@ -6,9 +6,6 @@ import 'package:todo_list/state/tasks/model/task_payload.dart';
 
 final task_provider = StateProvider((ref) => TaskController());
 final fetchStreamProvider = StreamProvider<List<TaskPayload>>((ref) async*{
-  final taskProvider = ref.watch(task_provider);
   final data = FirebaseFirestore.instance.collection(FirebaseCollectionName.tasks).snapshots().map((event) => event.docs.map((snapshot) => TaskPayload.fromSnapshot(snapshot)).toList(),);
-  // print("task  $taskProvider");
-  // final data = await taskProvider.readAllTaskToDo();
   yield* data;
 });

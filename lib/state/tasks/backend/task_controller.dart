@@ -12,6 +12,11 @@ import 'package:todo_list/state/tasks/model/task_payload.dart';
 class TaskController{
   TaskController();
   final CollectionReference collection = FirebaseFirestore.instance.collection(FirebaseCollectionName.tasks);
+  
+  Future<void> deleteTask(String? docId)async{
+    await collection.doc(docId).delete();
+  }
+
   Future<bool> addTaskToDo(
     {
       required String title,

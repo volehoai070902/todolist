@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_list/state/tasks/provider/task_provider.dart';
 
-class BoxTask extends StatelessWidget {
+
+class BoxTask extends StatefulWidget {
   final String title;
   final String subtitle;
   final String date;
   final String time;
+  final String ?id;
+  
   const BoxTask({
     super.key,
     required this.title,
     required this.subtitle,
     required this.date,
-    required this.time
+    required this.time,
+    this.id,
   });
+
+  @override
+  State<BoxTask> createState() => _BoxTaskState();
+}
+
+class _BoxTaskState extends State<BoxTask> {
+  bool checkbox = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +38,28 @@ class BoxTask extends StatelessWidget {
       child: Row(
         children: [
           //color line
-          Expanded(flex: 1, child: Container()),
+          Expanded(flex: 1, child: Container(
+          )),
+          if (checkbox)
+            Expanded(
+              flex: 4,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.blueGrey
+                ),
+                child: Consumer(builder: (context, ref, child) {
+                  return IconButton(
+                  onPressed: () {
+                    if (checkbox){
+                      ref.read(task_provider).deleteTask(widget.id);
+                    }
+                  },
+                  icon: Icon(Icons.delete_outlined),
+                  );
+                },) 
+              ),
+            ),
           //content of 1 task
           Expanded(
             flex: 20,
@@ -48,17 +82,21 @@ class BoxTask extends StatelessWidget {
                       child: Checkbox(
                         shape: const CircleBorder(),
                         activeColor: Colors.blue.shade800,
-                        onChanged: (value){},
-                        value: true,
+                        onChanged: (value){
+                          setState(() {
+                            checkbox = !checkbox;
+                          });
+                        },
+                        value: checkbox,
                       ),
                     ),
                     contentPadding: EdgeInsets.zero,
                     title: Text(
-                      title,
+                      widget.title,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
-                      subtitle,
+                      widget.subtitle,
                       style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey)),
@@ -68,7 +106,7 @@ class BoxTask extends StatelessWidget {
                     color: Colors.grey.shade200,
                   ),
             
-                  Text("${date}  ${time}")
+                  Text("${widget.date}  ${widget.time}")
                 ],
               ),
             ),
