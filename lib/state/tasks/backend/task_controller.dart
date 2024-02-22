@@ -38,6 +38,20 @@ class TaskController{
     }
   }
 
+  void updateTask({
+      required String id,
+      String ?subtitle,
+      String ?title,
+      DateTime ?date,
+      TimeOfDay ?time,
+      String ?status,
+      String ?category
+    }){
+      collection.doc(id).update({
+        FirebaseFieldName.taskStatus: status
+      });
+  }
+  
   Future<bool> updateTaskToDo(
     {
       required String id,
@@ -50,15 +64,18 @@ class TaskController{
     }
   )async{
     try{
-      final task = await collection.where(FieldPath.documentId,isEqualTo: id).limit(1).get();
-      await task.docs.first.reference.update({
-        FirebaseFieldName.taskTitle: title,
-        FirebaseFieldName.taskSubtitle:subtitle,
-        FirebaseFieldName.taskDate:date,
-        FirebaseFieldName.taskTime:time,
-        FirebaseFieldName.taskStatus:status,
-        FirebaseFieldName.taskCategory: category
+      await collection.doc(id).update({
+        FirebaseFieldName.taskStatus: status
       });
+      // final task = await collection.where(FieldPath.documentId,isEqualTo: id).limit(1).get();
+      // await task.docs.first.reference.update({
+      //   FirebaseFieldName.taskTitle: title,
+      //   FirebaseFieldName.taskSubtitle:subtitle,
+      //   FirebaseFieldName.taskDate:date,
+      //   FirebaseFieldName.taskTime:time,
+      //   FirebaseFieldName.taskStatus:status,
+      //   FirebaseFieldName.taskCategory: category
+      // });
       return true;
     } catch(e){
       return false;

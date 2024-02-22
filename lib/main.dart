@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/log/logger_custom.dart';
 import 'package:todo_list/state/auth/provider/is_logged_in_provider.dart';
@@ -14,6 +15,10 @@ void main() async {
   await FlutterConfig.loadEnvVariables();
   await Firebase.initializeApp(
   options: DefaultFirebaseOptions.currentPlatform,);
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+    AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
   runApp(
     ProviderScope(child: const MyApp())
     );

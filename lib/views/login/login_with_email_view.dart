@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_list/state/auth/provider/auth_state_provider.dart';
+import 'package:todo_list/state/auth/provider/is_logged_in_provider.dart';
 import 'package:todo_list/state/user_info/model/user_infor.dart';
 import 'package:todo_list/state/user_info/providers/user_infor_password_provider.dart';
+import 'package:todo_list/views/main/main_view.dart';
 
 final visionProvider = StateProvider<bool>((ref) => true);
 final buttonStateProvider = StateProvider((ref) => true);
@@ -92,7 +95,13 @@ class LoginWithEmailView extends ConsumerWidget{
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(50)
                       ),
-                      onPressed: isEnable ? () {} : null,
+                      onPressed: isEnable ? ()async {
+                        await ref.read(authStateProvider.notifier).loginWithPassword(email: user.email, password: user.password);
+                        final isLoggedIn = ref.watch(isLoggedInProvider);
+                        if (isLoggedIn) {
+                          Navigator.of(context).pop();
+                        }
+                      } : null,
                       child: Text("Log in"));
                 },
               )

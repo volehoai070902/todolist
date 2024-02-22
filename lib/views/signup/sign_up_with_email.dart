@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_list/state/auth/backend/authenticator.dart';
+import 'package:todo_list/state/auth/model/auth_result.dart';
+import 'package:todo_list/state/auth/provider/auth_state_provider.dart';
 import 'package:todo_list/state/user_info/model/user_infor.dart';
 import 'package:todo_list/state/user_info/providers/user_infor_password_provider.dart';
 final visionProvider = StateProvider<bool>((ref) => true);
@@ -91,7 +94,12 @@ class SignUpView extends ConsumerWidget {
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(50)
                       ),
-                      onPressed: isEnable ? () {} : null,
+                      onPressed: isEnable ? () async{
+                        final status = await Authenticator.signupWithPassword(email: user.email, password: user.password);
+                        if (status == AuthResult.success){
+                          Navigator.of(context).pop();
+                        }
+                      } : null,
                       child: Text("Sign up"));
                 },
               )

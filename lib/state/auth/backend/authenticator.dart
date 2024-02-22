@@ -68,12 +68,11 @@ class Authenticator {
     }
   }
 
-  Future<AuthResult> signupWithPassword(
+  static Future<AuthResult> signupWithPassword(
       {required String email, required String password}) async {
     try {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-
       return AuthResult.success;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

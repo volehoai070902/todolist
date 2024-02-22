@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_list/state/constants/task_status.dart';
 import 'package:todo_list/state/tasks/provider/task_provider.dart';
 
 
@@ -79,15 +80,25 @@ class _BoxTaskState extends State<BoxTask> {
                   ListTile(
                     trailing: Transform.scale(
                       scale: 1,
-                      child: Checkbox(
-                        shape: const CircleBorder(),
-                        activeColor: Colors.blue.shade800,
-                        onChanged: (value){
-                          setState(() {
-                            checkbox = !checkbox;
-                          });
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          return Checkbox(
+                          shape: const CircleBorder(),
+                          activeColor: Colors.blue.shade800,
+                          onChanged: (value)async{
+                            if (checkbox == true){                    
+                              ref.read(task_provider).updateTask(id: widget.id!,  status: TaskStatus.Done.name);
+                            }else{
+                              ref.read(task_provider).updateTask(id: widget.id!,  status: TaskStatus.InProgress.name);
+                            }
+
+                            setState(() {
+                              checkbox = !checkbox;
+                            });
+                          },
+                          value: checkbox,
+                        );
                         },
-                        value: checkbox,
                       ),
                     ),
                     contentPadding: EdgeInsets.zero,
@@ -101,10 +112,10 @@ class _BoxTaskState extends State<BoxTask> {
                           fontSize: 13,
                           color: Colors.grey)),
                     ),
-                  Divider(
-                    thickness: 1.5,
-                    color: Colors.grey.shade200,
-                  ),
+                    Divider(
+                      thickness: 1.5,
+                      color: Colors.grey.shade200,
+                    ),
             
                   Text("${widget.date}  ${widget.time}")
                 ],

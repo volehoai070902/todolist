@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_list/local_notification.dart';
 import 'package:todo_list/state/constants/task_status.dart';
 import 'package:todo_list/state/tasks/provider/task_provider.dart';
 import 'package:todo_list/views/components/task/model/category_model.dart';
@@ -10,6 +11,7 @@ import 'package:todo_list/views/components/task/providers/text_field_provider.da
 import 'package:todo_list/views/components/task/providers/time_picker_provider.dart';
 import 'package:todo_list/views/widgets/radio_widget.dart';
 import 'package:todo_list/views/widgets/text_field_widget.dart';
+import 'package:uuid/uuid.dart';
 
 
 class AddNewTaskModel extends ConsumerWidget {
@@ -173,7 +175,17 @@ class AddNewTaskModel extends ConsumerWidget {
                         print(title);
                         print(subtitle);
                         print(category.name);
-                        
+                        if (_date != null){
+                          DateTime scheduleDateTime = DateTime(
+                            _date.year,
+                            _date.month,
+                            _date.day,
+                            time.hour,
+                            time.minute
+                          );
+                          int id = ref.read(fetchStreamProvider).value!.length + 1;
+                          LocalNotification.scheduleNotification(id: 0 , title: title, body: subtitle, payload: "It's time", scheduleDateTime: scheduleDateTime);
+                        }
                         await ref.read(task_provider).addTaskToDo(
                           title: title, 
                           subtitle: subtitle, 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_list/local_notification.dart';
+import 'package:todo_list/state/auth/provider/auth_state_provider.dart';
 import 'package:todo_list/state/tasks/model/task_payload.dart';
 import 'package:todo_list/state/tasks/provider/task_provider.dart';
 import 'package:todo_list/views/components/task/add_new_task.dart';
@@ -7,7 +9,9 @@ import 'package:todo_list/views/main/provider/load_date_provider.dart';
 import 'package:todo_list/views/widgets/box_task_widget.dart';
 import 'package:intl/intl.dart';
 
-final selectedOptionsProvider = StateProvider<int>((ref) => 0); 
+final selectedOptionsProvider = StateProvider<int>((ref) => 0);
+final searchDateProvider = StateProvider<DateTime?>((ref) => null);
+
 class MainView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,7 +20,6 @@ class MainView extends ConsumerWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Container(
-
         height: size.height,
         width: size.width,
         decoration: BoxDecoration(color: Colors.grey.shade200),
@@ -45,39 +48,60 @@ class ListOfTask extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final task = ref.watch(fetchStreamProvider);
     final selected = ref.watch(selectedOptionsProvider);
+    final searchTask = ref.watch(searchDateProvider);
+
     print(selected);
     List<TaskPayload>? list = task.value;
-    if (selected == 1){
-      list = task.value?.map<TaskPayload>((e){
-        final date_1 = DateFormat('EEEE, d MMM, yyyy').format(DateTime.parse(e.date));
+    if (selected == 1) {
+      list = task.value?.map<TaskPayload>((e) {
+        final date_1 =
+            DateFormat('EEEE, d MMM, yyyy').format(DateTime.parse(e.date));
         final date_2 = DateFormat('EEEE, d MMM, yyyy').format(DateTime.now());
-        if (date_1 == date_2){
+        if (date_1 == date_2) {
           return e;
         }
         return TaskPayload.unknown();
       }).toList();
     }
-    if (selected == 2){
-      list = task.value?.map<TaskPayload>((e){
+    if (selected == 2) {
+      list = task.value?.map<TaskPayload>((e) {
         final date_1 = DateTime.parse(e.date);
         final date_2 = DateTime.now();
         final time_1 = TimeOfDay.fromDateTime(date_1);
         final time_2 = TimeOfDay.fromDateTime(date_2);
-        if (date_1.isAfter(date_2)){
+        if (date_1.isAfter(date_2)) {
           return e;
         }
 
-        if (e.time.compareTo(time_2.format(context)) > 0 && DateFormat('EEEE, d MMM, yyyy').format(date_1).compareTo(DateFormat('EEEE, d MMM, yyyy').format(date_2)) == 0){
+        if (e.time.compareTo(time_2.format(context)) > 0 &&
+            DateFormat('EEEE, d MMM, yyyy').format(date_1).compareTo(
+                    DateFormat('EEEE, d MMM, yyyy').format(date_2)) ==
+                0) {
           return e;
         }
         return TaskPayload.unknown();
       }).toList();
     }
 
-    if (list != null){
+    if (list != null) {
       list.removeWhere((element) => element.id == 'Unknown');
+      if (searchTask != null) {
+        list = list.map<TaskPayload>(
+          (e) {
+            final date_1 =
+                DateFormat('EEEE, d MMM, yyyy').format(DateTime.parse(e.date));
+            final date_2 = DateFormat('EEEE, d MMM, yyyy')
+                .format(DateTime.parse(searchTask.toString()));
+            if (date_1.compareTo(date_2) == 0) {
+              return e;
+            }
+            return TaskPayload.unknown();
+          },
+        ).toList();
+        list.removeWhere((element) => element.id == 'Unknown');
+      }
     }
-    
+
     return Container(
       padding: EdgeInsets.only(left: 20, right: 20),
       child: Consumer(
@@ -93,12 +117,12 @@ class ListOfTask extends ConsumerWidget {
                     if (taskPayload != null) {
                       date = DateTime.parse(taskPayload.date);
                       return BoxTask(
-                          id:taskPayload.id ,
-                          title: taskPayload.title,
-                          subtitle: taskPayload.subtitle,
-                          date: DateFormat("EEEE").format(date),
-                          time: taskPayload.time,
-                        );
+                        id: taskPayload.id,
+                        title: taskPayload.title,
+                        subtitle: taskPayload.subtitle,
+                        date: DateFormat("EEEE").format(date),
+                        time: taskPayload.time,
+                      );
                     }
                   },
                   childCount: list?.length,
@@ -112,67 +136,52 @@ class ListOfTask extends ConsumerWidget {
   }
 }
 
-enum ListCategory{
-  All,
-  Today,
-  Upcoming
-}
+enum ListCategory { All, Today, Upcoming }
 
-class ListOfCategory extends ConsumerWidget{
+class ListOfCategory extends ConsumerWidget {
   @override
-  Widget build (BuildContext content, WidgetRef ref){
+  Widget build(BuildContext content, WidgetRef ref) {
     final selected = ref.watch(selectedOptionsProvider);
     List<Widget> listCategory = [];
-    for(int i = 0; i < ListCategory.values.length; i++){
+    for (int i = 0; i < ListCategory.values.length; i++) {
       Color color = Colors.grey.shade200;
-      if (selected == i){
+      if (selected == i) {
         color = Color(0xFFD5E8FA);
       }
       listCategory.add(TabBarText(
-        onPressed: (){
+        onPressed: () {
           ref.read(selectedOptionsProvider.notifier).state = i;
-        }, 
+        },
         text: ListCategory.values.elementAt(i).name,
         color: color,
-        ));
+      ));
     }
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: listCategory
-      ),
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: listCategory),
     );
   }
-  
 }
-
-
 
 class TabBarText extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
   final Color? color;
-  const TabBarText({
-    super.key,
-    required this.onPressed,
-    required this.text,
-    this.color
-  });
+  const TabBarText(
+      {super.key, required this.onPressed, required this.text, this.color});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      style: TextButton.styleFrom(
-        backgroundColor: color
-      ),
-      onPressed: onPressed, 
-      child: Text(text,style: TextStyle(
-        color: Colors.blue.shade800
-      ),
-      )
-    );
+        style: TextButton.styleFrom(backgroundColor: color),
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.blue.shade800),
+        ));
   }
-} 
+}
 
 class HeaderOfBody extends ConsumerWidget {
   const HeaderOfBody({
@@ -180,8 +189,7 @@ class HeaderOfBody extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -252,12 +260,28 @@ class CustomAppBar extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-                onPressed: () {},
-                icon: ImageIcon(AssetImage("assets/images/calendar.png"))),
-            IconButton(
-                onPressed: () {},
-                icon: ImageIcon(AssetImage("assets/images/notification.png")))
+            Consumer(
+              builder: (context, ref, child) {
+                return IconButton(
+                    onPressed: () async {
+                      final date = await showDatePicker(
+                          context: context,
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2025, 12, 24),
+                          initialDate: DateTime.now());
+                      ref.read(searchDateProvider.notifier).state = date;
+                    },
+                    icon: ImageIcon(AssetImage("assets/images/calendar.png")));
+              },
+            ),
+            Consumer(builder: (context, ref, child) {
+              return IconButton(
+                onPressed: () async{
+                  ref.read(authStateProvider.notifier).logOut();
+                },
+                icon: ImageIcon(AssetImage("assets/images/sign-out.png")));
+            },)
+            
           ],
         ),
       ),
