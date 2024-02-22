@@ -17,11 +17,11 @@ void main() async {
   options: DefaultFirebaseOptions.currentPlatform,);
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
     AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
   runApp(
     ProviderScope(child: const MyApp())
-    );
+  );
 }
 
 class MyApp extends ConsumerWidget {
@@ -41,7 +41,7 @@ class MyApp extends ConsumerWidget {
         builder: (context, ref, child){
           ref.listen<bool>(isLoadingProvider, (_, isLoading) {
             if(isLoading){
-              LoggerCustom.instance().f(isLoading);
+              
               LoadingScreen.instance().show(
                 context: context
               );

@@ -49,8 +49,7 @@ class ListOfTask extends ConsumerWidget {
     final task = ref.watch(fetchStreamProvider);
     final selected = ref.watch(selectedOptionsProvider);
     final searchTask = ref.watch(searchDateProvider);
-
-    print(selected);
+    
     List<TaskPayload>? list = task.value;
     if (selected == 1) {
       list = task.value?.map<TaskPayload>((e) {
@@ -277,7 +276,7 @@ class CustomAppBar extends StatelessWidget {
             Consumer(builder: (context, ref, child) {
               return IconButton(
                 onPressed: () async{
-                  ref.read(authStateProvider.notifier).logOut();
+                  await ref.read(authStateProvider.notifier).logOut();
                 },
                 icon: ImageIcon(AssetImage("assets/images/sign-out.png")));
             },)
@@ -288,14 +287,3 @@ class CustomAppBar extends StatelessWidget {
     );
   }
 }
-
-// Row(
-//           children: [
-//             IconButton(
-//             onPressed: () {},
-//             icon: ImageIcon(AssetImage("assets/images/calendar.png"))),
-//           IconButton(
-//             onPressed: () {},
-//             icon: ImageIcon(AssetImage("assets/images/notification.png")))
-//           ],
-//         )
