@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook_app_id">1973052746444449</string>
+    <string name="fb_login_protocol_scheme">fb1973052746444449</string>
+    <string name="facebook_client_token">ffc4fc79f05f7fb9da47c006b02121a9</string>
+    <string name="app_name">TodoList</string>
+</resources>
